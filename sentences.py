@@ -1,29 +1,42 @@
-NUMS = [str(n) for n in list(range(13))]
+
+import re
+
 PUNCTS = [".", "?", "!"]
+LIMIT = 13
 
 def is_valid_sentence(s):
-	words = tokenize_sentence(s)
+	numbers_found = find_numbers(s)
 
-	# TODO - check nums appearing.  use any() in list
-
-	# begins w/ capital
-	if(s[0].isupper()):
-		# ensure last char is valid punctuation
-		if(s[-1] in PUNCTS):
-			# if a period occurs, it must be @ end
-			if(((('.') in s) and s.index('.')==len(s)-1) or '.' not in s):
-				# do we have an even qty of inverted comma?
-				if((('"') in words and words['"']%2==0)) or ('"') not in words:
-					return True
+	# if no nums found, or, if nums found are < 13
+	if(not numbers_found) or (numbers_found and not nums_under_limit(numbers_found)):
+		if(begins_capitalized(s)):
+			if(ends_with_valid_punctuation(s)):
+				if(period_is_at_end(s)):
+					if(even_quotes_count(s)):
+						return True
 	return False
 
-def tokenize_sentence(s):
-	# dict from words in s
-	# keys=words, values=no. times word appears 
-	d={}
-	for x in s.split(' '):
-		if x in d:
-			d[x]+=1
-		else:
-			d[x]=1
-	return d
+def find_numbers(s):
+	# strip string of everything but whitespace, numbers, letters & underscore
+	# return a list of numbers found
+    s = re.sub(r'[^\w\s]', '', s)
+    return [int(s) for s in s.split() if s.isdigit()]
+    
+def nums_under_limit(nums):
+    return any(num<LIMIT for num in nums)
+
+def begins_capitalized(s):
+	# s begins w/ capital
+	return s[0].isupper()
+
+def ends_with_valid_punctuation(s):
+	# ensure last char is valid punctuation
+	return s[-1] in PUNCTS
+
+def period_is_at_end(s):
+	# if a period occurs, it must be @ end
+	return '.' not in s or (('.') in s and s.index('.')==len(s)-1)
+
+def even_quotes_count(s):
+	# number of inverted commas must be an even number, suggesting opened & closed 
+	return '"' not in s or (('"') in s and s.count('"')%2==0)

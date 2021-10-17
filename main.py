@@ -4,4 +4,4 @@ from SentenceValidator import SentenceValidator
 
 sv = SentenceValidator()
 sv.print_rules()
-sv.begin_validate_sentences()
+sv.begin_validating_sentences()

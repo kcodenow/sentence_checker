@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 import re
 import sys
 
@@ -22,7 +22,7 @@ class SentenceValidator(object):
 			\ntype Q to quit!\n'
 		)
 
-	def begin_validate_sentences(self):
+	def begin_validating_sentences(self):
 		# continually validate sentences, unless user quits
 		while(True):
 			sentence = input('Your sentence, please:\n')
@@ -74,6 +74,5 @@ class SentenceValidator(object):
 		# number of inverted commas must be an even number, suggesting opened & closed 
 		return '"' not in s or (('"') in s and s.count('"')%2==0)
 
-	def exit(self):
-		print('Goodbye!') # & terminate
-		sys.exit()
+	def exit(self): # terminate with exit code 1
+		sys.exit(1)

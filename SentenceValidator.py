@@ -40,39 +40,47 @@ class SentenceValidator(object):
 	def is_valid_sentence(self, s):
 		numbers_found = self.find_numbers(s)
 
-		# if no nums found, or, if nums found are < 13
-		if(not numbers_found) or (numbers_found and not self.nums_under_limit(numbers_found)):
-			if(self.begins_capitalized(s)):
-				if(self.ends_with_valid_punctuation(s)):
-					if(self.period_is_at_end(s)):
-						if(self.even_quotes_count(s)):
-							return True
-		return False
+		if(self.nums_under_limit(numbers_found)):
+			return False
+		if(not self.begins_capitalized(s)):
+			return False
+		if(not self.ends_with_valid_punctuation(s)):
+			return False
+		if(not self.period_is_at_end(s)):
+			return False
+		if(not self.even_quotes_count(s)):
+			return False
+		return True
 
 	def find_numbers(self, s):
-		# strip string of everything but whitespace, numbers, letters & underscore
 		# return a list of numbers found
-	    s = re.sub(r'[^\w\s]', '', s)
-	    return [int(s) for s in s.split() if s.isdigit()]
+	    return [int(x) for x in re.findall('\d+', s)]
 	    
 	def nums_under_limit(self, nums):
+		# if no nums found, or, if nums found are < 13
 	    return any(num<self.LIMIT for num in nums)
 
 	def begins_capitalized(self, s):
 		# s begins w/ capital
-		return s[0].isupper()
+		try:
+			return s[0].isupper()
+		except IndexError:
+			return False
 
 	def ends_with_valid_punctuation(self, s):
 		# ensure last char is valid punctuation
-		return s[-1] in self.CLOSING_PUNCTS
+		try:
+			return s[-1] in self.CLOSING_PUNCTS
+		except IndexError:
+			return False
 
 	def period_is_at_end(self, s):
 		# if a period occurs, it must be @ end
-		return '.' not in s or (('.') in s and s.index('.')==len(s)-1)
+		return '.' not in s or s.index('.')==len(s)-1
 
 	def even_quotes_count(self, s):
 		# number of inverted commas must be an even number, suggesting opened & closed 
-		return '"' not in s or (('"') in s and s.count('"')%2==0)
+		return '"' not in s or s.count('"')%2==0
 
 	def exit(self): # terminate with exit code 1
 		sys.exit(1)

@@ -23,12 +23,12 @@ INVALIDS = [
 class TestSentenceValidityChecker(unittest.TestCase):
 
 	# end2end - ensure system labels valid sentences as such
-	def test_valids(self):
-		sv = SentenceValidator()
+	# def test_valids(self):
+	# 	sv = SentenceValidator()
 
-		for sentence in VALIDS:
-			print(f'{sentence}')
-			self.assertEqual(sv.is_valid_sentence(sentence), True)
+	# 	for sentence in VALIDS:
+	# 		print(f'{sentence}')
+	# 		self.assertEqual(sv.is_valid_sentence(sentence), True)
 
 	# end2end - ensure system labels invalid sentences as such 
 	def test_invalids(self):
@@ -62,6 +62,7 @@ class TestSentenceValidityChecker(unittest.TestCase):
 			([4, 14], True),
 			([1, 2, 3.8], True),
 			([13], False),
+			([], False),
 			([3013, 10000000000], False)
 		]
 
@@ -78,7 +79,8 @@ class TestSentenceValidityChecker(unittest.TestCase):
 			('Perfectly valid capitalisation', True),
 			('ALL CAPS IN HERE', True),
 			('eVERYTHING UPPERCASE BUT THE ONE THAT MATTERS', False),
-			('no caps at all', False)
+			('no caps at all', False),
+			('', False),
 		]
 
 		for s in sentences:
@@ -97,6 +99,7 @@ class TestSentenceValidityChecker(unittest.TestCase):
 			('The big bad wolf&', False),
 			('The big bad wolf', False),
 			('The big bad wolf', False),
+			('', False),
 		]
 		for s in sentences:
 			self.assertEqual(sv.ends_with_valid_punctuation(s[0]), s[1])
